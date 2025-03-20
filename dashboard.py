@@ -2,12 +2,10 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# Carregar dados
 df = pd.read_excel("bancoGAMES.xlsx")
 
 st.set_page_config(page_title="Dashboard Estatística 🎮", page_icon = "📊", layout="wide")
 
-# Função para mostrar o dashboard
 def show_dashboard():
     st.title("Dashboard de Consoles de Videogame 🎮")
     
@@ -35,7 +33,7 @@ def show_dashboard():
     # Segunda linha com gráficos lado a lado
     col3, col4 = st.columns(2)
 
-    # Gráfico 3: Unidades vendidas ao longo dos anos (na primeira coluna)
+    # Gráfico 3: Preço inicial médio por Empresa
     with col3:
         df_preco_medio = df.groupby('EMPRESA')['PREÇO INICIAL'].mean().reset_index()
         df_preco_medio = df_preco_medio.sort_values('PREÇO INICIAL', ascending=False)
@@ -50,7 +48,7 @@ def show_dashboard():
     # Gráficos na linha inferior
     col5, col6 = st.columns(2)
 
-    # Gráfico 5: Preço inicial médio por empresa (na primeira coluna)
+    # Gráfico 5: Unidades vendidas por tipo de Console e Empresa
     with col5:
         df_grouped_tipo_empresa = df.groupby(['EMPRESA', 'TIPO'])['UNIDADES VENDIDAS'].sum().reset_index()
         df_grouped_tipo_empresa = df_grouped_tipo_empresa.sort_values('UNIDADES VENDIDAS', ascending=False)
@@ -58,7 +56,7 @@ def show_dashboard():
                       title="Unidades Vendidas por Tipo de Console e Empresa", text_auto='.2s')
         st.plotly_chart(fig5, use_container_width=True)
 
-    # Gráfico 6: Ano de lançamento vs. descontinuação (na segunda coluna)
+    # Gráfico 6: Faturamento por tipo de Console
     with col6:
         df_grouped_tipo_faturamento = df.groupby('TIPO')['FATURAMENTO'].sum().reset_index()
         df_grouped_tipo_faturamento = df_grouped_tipo_faturamento.sort_values('FATURAMENTO', ascending=False)
@@ -68,10 +66,8 @@ def show_dashboard():
         fig6.update_layout(yaxis_title="Faturamento (Bilhões)")
         st.plotly_chart(fig6, use_container_width=True)
 
-    # Fonte do Dashboard
     st.write("Feito por: André, Arthur e Lucas 🎮")
 
-# Função para mostrar o banco de dados
 def show_database():
     st.title("Banco de Dados de Consoles 📊")
     st.write("Aqui estão os dados do Excel carregados:")
@@ -85,7 +81,6 @@ def show_sobreAula():
     st.title("Dados Quantitativos para contas 📈")
     st.write("Aqui estão os dados quantitativos onde foram feitos esses cálculos:")
 
-    # Selecionando as colunas quantitativas
     df_quantitativo = df[['UNIDADES VENDIDAS', 'PREÇO INICIAL', 'FATURAMENTO']]
     st.dataframe(df_quantitativo)
 
@@ -94,23 +89,18 @@ def show_sobreAula():
     for coluna in df_quantitativo.columns:
         st.write(f"Coluna - **{coluna}:**")
         
-        # Média
         media = df_quantitativo[coluna].mean()
         st.write(f"Média: {media:,.2f}")
         
-        # Mediana
         mediana = df_quantitativo[coluna].median()
         st.write(f"Mediana: {mediana:,.2f}")
         
-        # Moda
         moda = df_quantitativo[coluna].mode()[0]
         st.write(f"Moda: {moda:,.2f}")
         
-        # Desvio Padrão
         desvio_padrao = df_quantitativo[coluna].std()
         st.write(f"Desvio Padrão: {desvio_padrao:,.2f}")
 
-        # Coeficiente de Variação (Desvio Padrão / Média)
         coef_variacao = (desvio_padrao / media) * 100
         st.write(f"Coeficiente de Variação: {coef_variacao:,.2f} %")
 
@@ -120,7 +110,6 @@ def show_sobreAula():
 # Menu de navegação
 menu = st.sidebar.selectbox("Escolha a página", ("Dashboard 📶", "Sobre as aulas ✍🏼","Banco de Dados 📈"))
 
-# Navegação entre as páginas
 if menu == "Dashboard 📶":
     show_dashboard()
 elif menu == "Banco de Dados 📈":
